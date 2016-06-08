@@ -1,0 +1,33 @@
+﻿body {
+}
+
+.pageHeading {
+    width: 100%; 
+    background-color: #68A4C4; 
+    color:white; 
+    padding: 5px 0px 10px 0px;
+}
+
+.standardFont {
+    font-family: Arial,Verdana;
+    font-size:13px;
+}
+
+.dataRow {
+    cursor:pointer;
+}
+.headingRow {
+    height:30px;
+    background-color:#eee;
+    cursor:pointer;
+}
+
+.pagingRow {
+    height:30px;
+    background-color:#eee;
+}
+
+.listTableImage {
+    height:40px;
+    width:auto;
+}

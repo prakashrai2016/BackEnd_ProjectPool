@@ -1,0 +1,103 @@
+﻿@model IEnumerable<ProjectPool.DataEntity.Read>
+
+@{
+    ViewBag.Title = "Reads";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<script src="~/Scripts/ProjectPool/Read.js"></script>
+
+  @using (Html.BeginForm("", "", FormMethod.Post, new { @id = "ReadListForm"}))
+  {
+      //Html.Hidden("SearchText", (string)ViewBag.SearchText);
+      //Html.Hidden("PageNumber", (string)ViewBag.PageNumber);
+      //Html.Hidden("PageSize", (string)ViewBag.PageSize);
+      //Html.Hidden("OrderColumn", (string)ViewBag.OrderColumn);
+      //Html.Hidden("OrderBy", (string)ViewBag.OrderBy);
+      <input type="hidden" name="SearchString" id="SearchString" value="@ViewBag.SearchText"/>
+      <input type="hidden" name="PageNumber" id="PageNumber" value="@ViewBag.PageNumber"/>
+      <input type="hidden" name="PageSize" id="PageSize" value="@ViewBag.PageSize"/>
+  }
+
+<div id="dialog_progress" style="display:none;">
+	<img src="~/Contents/images/ajax-loaderLarge.gif" style="    width: 70px; height: 70px; margin-left: 30px; margin-top: 18px; margin-bottom: 6px;"/>
+	<p style="text-align: center; font-size: 11;">Loading..</p>
+</div>
+
+<div class="pageHeading"><span class="standardFont" style="margin-left:10px;vertical-align:middle;">Reads</span>
+    <div style="float:right; vertical-align:middle; margin-right:10px;">
+        <input type="text" style="width:120px;" id="txtSearchString"/>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnSearch">Search</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnAddNewRead">New</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnDeleteRead">Delete</button>
+    </div>
+</div>
+
+<div id="divReadList">
+    @{ Html.RenderPartial("_Partial", Model); }
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        var baseUrl = $('#baseUrl').val();
+
+        $('.dataRow').mouseenter(function () {
+            var id = $(this).attr('id');
+            $('#' + id).parent('tr').css('background-color', '#eee');
+        });
+
+        $('.dataRow').mouseout(function () {
+            var id = $(this).attr('id');
+            $('#' + id).parent('tr').css('background-color', 'white');
+        });
+
+        $('.dataRow').click(function () {
+            AjaxLoading();
+            var id = $(this).attr('id');
+            var guid = id.split('_')[1];
+            window.location = baseUrl + 'Read/Detail/' + guid;
+        });
+
+        $('#btnAddNewRead').click(function () {
+            NewRead();
+        });
+
+        function NewRead() {
+            AjaxLoading();
+            window.location = baseUrl + 'Read/New/';
+        }
+
+        $('#btnDeleteRead').click(function () {
+            DeleteRead();
+        });
+
+        function DeleteRead() {
+            var readIds = "";
+            AjaxLoading();
+            $('.readCheckBox').each(function () {
+                if ($(this).prop('checked') == true) {
+                    readIds += "," + $(this).attr('id');
+                }
+            });
+
+            readIds = readIds.substring(1);
+            $.ajax({
+                type: 'POST',
+                data: $('#ReadListForm').serialize(),
+                url: baseUrl + 'Read/Delete/' + readIds,
+                async: false,
+                error: function () {
+                    ModalMessage("divLoader", "Error occurred while calling ajax.");
+                },
+                success: function (data) {
+                    $("#divReadList").html('');
+                    $("#divReadList").html(data);
+                    EndAjaxLoading();
+                }
+            });
+        }
+    });
+    
+</script>

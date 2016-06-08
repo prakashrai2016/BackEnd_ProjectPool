@@ -1,0 +1,75 @@
+﻿@model ProjectPool.DataEntity.Tag
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="box round first grid">
+    <h2>New Project</h2>
+    <div class="block">
+        @using (Html.BeginForm("Edit", "Tag", FormMethod.Post, new { @id = "tagForm", @enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="TagId" value="@Model.TagId"/>
+            <input type="hidden" name="GUID" value="@Model.GUID"/>
+            <input type="hidden" name="DateCreated" value="@Model.DateCreated"/>
+            <input type="hidden" name="ImageName" value="@Model.ImageName"/>
+            
+            <table class="form">
+                <tbody>
+                    <tr>
+                        <td class="col2">
+                            <label>Project Name</label>
+                            @Html.TextBoxFor(x => x.Name, new { @style = "width:99%;", @class = "mandatory" })
+                        </td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <label>Short Description</label>
+                            @Html.TextAreaFor(x => x.Description)
+
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td>
+                            <label style="margin-right:10px;">Project Image</label><br />
+                            <input type="file" name="uploadTagImage" id="FileUpload"  class = "mandatory textBox" value="" tabindex="2" onchange="readURL(this);" style="display:none" />
+                            <img src="~/Data/Tag/@Model.Name/@Model.ImageName" alt="" class ="uploadfile" style="cursor: pointer; height:150px;width:auto;"/>
+
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+    
+        <button class="btn-icon btn-grey btn-arrow-right"  id="saveTag"><span></span>Next</button>    
+        }
+        
+   </div>
+</div>
+
+<script>
+    CKEDITOR.replace('Description');
+
+    $(".uploadfile").click(function () {
+        $("#FileUpload").trigger('click');
+    });
+
+    function readURL(input) {
+        if (input.files) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.uploadfile')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
+<script src="~/Scripts/ProjectPool/Tag.js"></script>
+

@@ -1,0 +1,187 @@
+﻿@using ProjectPool.Library;
+<!DOCTYPE html>
+<html xmlns>
+<head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+        <title>ProjectPool</title>
+        <link href="~/Contents/AccordionMenuCss.css" rel="stylesheet" />
+        <link href="~/Contents/Menu.css" rel="stylesheet" />
+        <link href="~/Contents/ProjectPool.css" rel="stylesheet" />
+
+        <link href="~/Contents/default/base/jquery-ui.css" rel="stylesheet" />
+        <link href="~/Contents/default/base/jquery.ui.dialog.css" rel="stylesheet" />
+        <script src="~/Scripts/core/jquery-1.10.2.min.js"></script>
+        <script src="~/Scripts/core/jquery-ui-1.10.3.min.js"></script>
+        <script src="~/Contents/default/ckeditor/ckeditor.js"></script>
+
+        <script src="~/Scripts/ProjectPool/AjaxLoader.js"></script>
+    <script src="~/Scripts/ProjectPool/Tag.js"></script>
+	</head>
+	
+	<body>
+        <input id="baseUrl" value="@Common.GetAppSettingValue("BaseUrl")" type="hidden"/>
+        @Html.Hidden("ActiveMenuId", Session["ActiveMenu"])
+
+	<div style="width:80%; margin:0 auto; min-height:660px;" id="contentRender">
+		<div style="height:50px;" id="headerPart">
+			<div class="LogoDefaults">
+				<img src="~/Contents/images/menu.png" class="mainMenuIcon" style="height: 32px;width: 32px;cursor: pointer;margin-right: 7px;margin-left: 7px; margin-top: 9px; float:left;">
+				<!-- 
+				<img src="images/capture.png" style="float:left; height:60px; margin-top: 14px;"/>  -->
+				<b style="float:right; margin-top:9px;">
+					<span style="font-family:'Open Sans', Arial, sans-serif;color:#68A4C4;font-size:30px;">PROJECT</span><span style="font-size:30px; color:#777777;font-family:'Open Sans', Arial, sans-serif;">POOL</span>
+				</b>
+			</div>
+				
+			<div id='cssmenu' style="display:none">
+				@*<div id="menuHeader">
+					<div class="adminIcon"></div>
+					<div class="">Manage</div>
+					<img src="~/Contents/images/menu.png" style="width:32px; height:32px; float: right; padding: 4px;"/>
+				</div>
+				*@
+				<ul>
+					<li class='has-sub'>
+						<a href='#' id="project">
+							Projects
+							<div class="custom-icon homeIcon"></div>
+						</a>
+						<ul style="width : 100%;">
+								<li><a href="~/Project" class="menuLink selected" onclick="menuClicked(this);" id="manageProject">Manage Projects</a></li>
+						</ul>
+						
+						<ul style="width : 100%;">
+								<li><a href="#" class="menuLink" onclick="menuClicked(this);" id="">Manage Comments</a></li>
+						</ul>
+					</li>
+					<li class='has-sub'>
+						<a href='#' id="article">
+							Articles
+							<div class="custom-icon homeIcon"></div>
+						</a>
+						<ul style="width : 100%;">
+								<li><a href="~/Article" class="menuLink selected" onclick="menuClicked(this);" id="manageArticle">Manage Articles</a></li>
+						</ul>
+						
+						<ul style="width : 100%;">
+								<li><a href="#" class="menuLink" onclick="menuClicked(this);" id="">Manage Comments</a></li>
+						</ul>
+					</li>
+
+                    <li class='has-sub'>
+						<a href='#' id="tag">
+							Tags
+							<div class="custom-icon homeIcon"></div>
+						</a>
+						<ul style="width : 100%;">
+								<li><a href="/Tag" class="menuLink selected" onclick="menuClicked(this);" id="manageTag">Manage Tags</a></li>
+						</ul>
+					</li>
+						   
+
+                    <li class='has-sub'>
+						<a href='#' id="read">
+							Reads
+							<div class="custom-icon homeIcon"></div>
+						</a>
+						<ul style="width : 100%;">
+								<li><a href="/Read" class="menuLink selected" onclick="menuClicked(this);" id="manageRead">Manage Read</a></li>
+						</ul>
+						
+					</li>
+
+                    <li class='has-sub'>
+						<a href='#' id="setting">
+						Settings
+							<div class="custom-icon homeIcon"></div>
+						</a>
+						<ul style="width : 100%;">
+								<li><a href="/Login/ChangePassword" class="menuLink selected" onclick="menuClicked(this);" id="manageRead">Change Passwod</a></li>
+						</ul>
+						
+					</li>
+
+					<li>
+						<a href="/Login/Logout">
+						  logout
+							<div class="custom-icon logoutIcon"></div>
+						</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+        <div>
+            @RenderBody()
+        </div>
+	</div>
+	<script>
+	    $(document).ready(function () {
+	        var baseUrl = $('#baseUrl').val();
+
+	        $(".mainMenuIcon").click(function () {
+	            $("#cssmenu").css("display", "block");
+	            event.stopPropagation();
+	        });
+
+	        $('html').click(function () {
+	            $("#cssmenu").css("display", "none");
+	        });
+
+	        $('#menuHeader').click(function () {
+	            $("#cssmenu").css("display", "none");
+	        });
+
+	        $('#cssmenu').click(function (event) {
+	            event.stopPropagation();
+	        });
+
+	        $('#cssmenu li.has-sub>a').on('click', function () {
+	            $(this).removeAttr('href');
+	            var element = $(this).parent('li');
+	            if (element.hasClass('open')) {
+	                element.removeClass('open');
+	                element.find('li').removeClass('open');
+	                element.find('ul').slideUp();
+	            }
+	            else {
+	                element.addClass('open');
+	                element.children('ul').slideDown();
+	                element.siblings('li').children('ul').slideUp();
+	                element.siblings('li').removeClass('open');
+	                element.siblings('li').find('li').removeClass('open');
+	                element.siblings('li').find('ul').slideUp();
+	            }
+	        });
+
+	        function PreLoad() {
+	            var activeMenu = $("#ActiveMenuId").val();
+	            $("#" + activeMenu).addClass("selected");
+
+	            var element = $("#" + activeMenu).parents('li.has-sub');
+	            element.addClass('open');
+	            element.children('ul').slideDown();
+	            element.siblings('li').children('ul').slideUp();
+	            element.siblings('li').removeClass('open');
+	            element.siblings('li').find('li').removeClass('open');
+	            element.siblings('li').find('ul').slideUp();
+	        };
+
+	        function menuClicked(item) {
+	            var newDate = new Date();
+	            $.ajax({
+	                url: baseURL + "Dashboard/SetActiveMenu/?menuId=" + item.id + "&date=" + newDate,
+	                type: 'GET',
+	                dataType: 'json',
+	                timeout: 9000,
+	                async: false
+	            });
+	        }
+
+	        window.onpaint = PreLoad();
+
+	    });
+	    
+	</script>
+	</body>
+</html>

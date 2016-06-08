@@ -1,0 +1,46 @@
+﻿@model IEnumerable<ProjectPool.DataEntity.Read>
+
+<table style="border: 0px solid #fff;width: 100%;">
+    <thead>
+        <tr class="headingRow">
+            <th style="width:3%;"></th>
+            <th class="standardFont" style="text-align:left; width:15%;">Topic</th>
+            <th class="standardFont" style="text-align:left; width:35%;">Description</th>
+            <th class="standardFont" style="text-align:left; width:12%;">Author</th>
+            <th class="standardFont" style="text-align:left; width: 15%;">URL</th>
+            <th class="standardFont" style="text-align:left; width:10%;">Created Date</th>
+            <th class="standardFont" style="text-align:left; width:10%;">Modified Date</th>
+        </tr>
+        </thead>
+    <tbody>
+        @foreach (var item in Model) {
+        <tr>
+            <td style="width:3%"><input type="checkbox" id="@item.ReadId" class="readCheckBox"/></td>
+            <td style="width:15%;" class="standardFont dataRow" id="col1_@item.GUID">@item.Topic</td>
+            <td style="width:35%;" class="standardFont dataRow" id="col2_@item.GUID">@Html.Raw(item.Description)</td>
+                    
+            <td style="width:12%;" class="standardFont dataRow" id="col3_@item.GUID"><img alt="@item.Topic" class="listTableImage" src="~/Data/Read/@item.Topic/@item.ImageName" /></td>
+                    
+            <td class="standardFont dataRow" id="row4_@item.GUID" style="width:15%;">@item.Url</td>
+            <td style="width:10%;" class="standardFont dataRow" id="col5_@item.GUID">@item.DateCreated</td>
+            <td style="width:10%;" class="standardFont dataRow" id="col6_@item.GUID">@item.DateModified</td>
+        </tr>
+        }
+        <tr>
+            <td colspan="7" class="pagingRow">
+                <div style="float:right;">
+                    <span>page size</span>
+                    <select id="pageSizeSelect">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                    <img src="~/Contents/images/back.gif" style="margin-left:30px;" id="bckPage"/>
+                    <input type="text" style="width:30px; text-align:center;" value="@ViewBag.PageNumber" id="txtPageNumber"/>
+                    <img src="~/Contents/images/forward.gif" id="nxtPage"/>
+                </div>
+            </td>
+        </tr>
+    </tbody>
+</table>
+

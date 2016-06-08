@@ -1,0 +1,165 @@
+﻿@model ProjectPool.DataEntity.Article
+@using ProjectPool.Library;
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+@*<script src="~/Scripts/core/jquery.ui.widget.js"></script>
+<script src="~/Scripts/core/jquery.iframe-transport.js"></script>
+<script src="~/Scripts/core/jquery.fileupload.js"></script>*@
+<script src="~/Scripts/ProjectPool/Tag.js"></script>
+
+<div class="pageHeading"><span class="standardFont" style="margin-left:10px;vertical-align:middle;">Articles</span>
+    <div style="float:right; vertical-align:middle; margin-right:10px;">
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnList">List</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnSaveArticle">Save</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont">Delete</button>
+    </div>
+        
+</div>
+
+<div id="dialog_progress" style="display:none;">
+	<img src="~/Contents/images/ajax-loaderLarge.gif" style="    width: 70px; height: 70px; margin-left: 30px; margin-top: 18px; margin-bottom: 6px;"/>
+	<p style="text-align: center; font-size: 11;">Loading..</p>
+</div>
+
+<div id="dialog_newTag" style="display:none; width:700px; height:500px;">
+    <form method="post" action="~/Tag/New" enctype="multipart/form-data" id="newTagForm">
+        <table>
+            <tr>
+                <td><label class="standardFont"><b>Name</b></label></td>
+                <td><input name="tagName" id="tagName" style="width:315px"/><br /></td>
+            </tr>
+
+            <tr>
+                <td><label class="standardFont"><b>Description</b></label></td>
+                <td><textarea name="Description" id="Description" style="width:315px"></textarea></td>
+            </tr>
+
+            <tr>
+                <td><label class="standardFont"><b>Image</b></label></td>
+                <td><input type="file" id="uploadTagImage" name="uploadTagImage" class="standardFont"/></td>
+            </tr>
+
+        </table>
+
+    </form>
+</div>
+
+<div class="standardFont" style="width:99%; border: 1px #808080 solid; border-radius:5px; padding:5px; margin:5px auto;">
+    @using (Html.BeginForm("New", "Article", FormMethod.Post, new { @id = "ArticleForm", @enctype = "multipart/form-data" }))
+    {
+        <table class="form" style="width:100%;">
+            <tbody>
+                <tr>
+                    <td>
+                        <label><b>Article Name</b></label>
+                        @Html.TextBoxFor(x => x.Title, new { @style="width:100%;", @class = "mandatory"})
+                        <hr />
+                    </td>
+                    
+                </tr>
+                    
+                <tr>
+                    <td>
+                        <label><b>Tags</b></label>
+                        <button style="border-radius:3px; cursor:pointer; float:right;" onclick="NewTagPopUp();return false;">Add New Tag</button>
+                        <br />
+                        @{
+                            int[] tagIds = ViewBag.LinkedTags as int[];
+                        }
+                        <input type="hidden" name="ArticleTags" id="ArticleTags" class="mandatory"/>
+                        <div id="newTag"></div>
+                        @foreach (KeyValuePair<int, string> item in ViewBag.TagKeyValueList as Dictionary<int, string>)
+                        {
+                                <input type="checkbox" value="@item.Key" id="@item.Key" name="ArticleTags" class="checkBox tagCheckBox" tabindex="10"/>
+                                @item.Value
+                            <br />
+                        }
+                        <hr />    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label><b>Short Description</b></label>
+                        @Html.TextAreaFor(x => x.ShortDescription, new { @style="width:100%; height: 100px;"})
+                        <hr />
+                    </td>
+                </tr>
+            
+                <tr>
+                    <td>
+                        <label style="margin-right:10px;"><b>Article Image</b></label><br />
+                        <input type="file" name="uploadArticleImage" id="FileUpload"  class = "mandatory" class="textBox" value="" tabindex="2" onchange="readURL(this);" />
+                        
+                        <hr />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label><b>Description</b></label>
+                        @Html.TextAreaFor(x =>x.Discription)
+                        <hr />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <label><b>References</b></label>
+                        @Html.TextAreaFor(x => x.References, new { @style="width:100%; height: 100px;"})
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    
+            
+    }
+
+</div>
+
+<script src="~/Scripts/ProjectPool/Article.js"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        //EndAjaxLoading();
+    });
+    //CKEDITOR.replace('ShortDescription');
+    // CKEDITOR.replace('Discription');
+    //CKEDITOR.replace('References');
+
+    CKEDITOR.replace('Discription', {
+        "filebrowserImageUploadUrl": '@Common.GetAppSettingValue("BaseUrl")' + "Article/UploadTempImage",
+        extraPlugins: 'mathjax',
+        mathJaxLib: 'http://cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
+        height: 620
+    });
+
+    CKEDITOR.editorConfig = function (config) {
+        config.extraPlugins = 'mathjax';
+        config.toolbar_Full[8] = ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Mathjax'];
+    }
+
+    $(".uploadfile").click(function () {
+        $("#FileUpload").trigger('click');
+    });
+
+    function readURL(input) {
+        if (input.files) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.uploadfile')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+</script>
+

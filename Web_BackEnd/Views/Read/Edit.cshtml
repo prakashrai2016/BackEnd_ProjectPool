@@ -1,0 +1,62 @@
+﻿@model ProjectPool.DataEntity.Read
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="box round first grid">    <h2>New Reading</h2>
+    <div class="block">
+        @using (Html.BeginForm("Edit", "Read", FormMethod.Post, new { @id = "readingForm", @enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="ReadId" value="@Model.ReadId"/>
+            <input type="hidden" name="GUID" value="@Model.GUID"/>
+            <input type="hidden" name="DateCreated" value="@Model.DateCreated"/>
+            <input type="hidden" name="ImageName" value="@Model.ImageName"/>
+            
+            <b><label>Topic</label></b><br />
+            @Html.TextBoxFor(x => x.Topic, new { @style = "width:100%;" })
+            <hr />
+
+            <b><label>Author</label></b><br />
+            @Html.TextBoxFor(x => x.Reference, new { @style = "width:100%;" })
+            <hr />
+
+            <b><label>Description</label></b><br />
+            @Html.TextAreaFor(x => x.Description, new { @class = "ckeditor" })
+            <hr />
+            
+            <b><label>Reading Image</label></b><br />
+            <input type="file" name="uploadReadImage" id="FileUpload"  class = "mandatory textBox" value="" tabindex="2" onchange="readURL(this);" style="display:none" />
+            <img src="~/Data/Read/@Model.Topic/@Model.ImageName" alt="" class ="uploadfile" style="cursor: pointer; height:150px;width:auto;"/>
+            <hr />
+            
+            <b><label>Reading Link</label></b><br />
+            @Html.TextBoxFor(x => x.Url, new { @style = "width:100%;" })
+            <hr />    
+            
+        <hr />
+        <button class="btn-icon btn-grey btn-arrow-right" type="submit" id="saveArticle"><span></span>Save</button>
+        }
+   </div>
+</div>
+
+<script src="~/Scripts/ProjectPool/Reading.js"></script>
+<script type="text/javascript">
+    CKEDITOR.replace('Description');
+
+    $(".uploadfile").click(function () {
+        $("#FileUpload").trigger('click');
+    });
+
+    function readURL(input) {
+        if (input.files) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.uploadfile')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

@@ -1,0 +1,90 @@
+﻿@model ProjectPool.DataEntity.ProjectStep
+
+@{
+    ViewBag.Title = "Steps";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<script src="~/Scripts/ProjectPool/Tag.js"></script>
+
+<div class="pageHeading"><span class="standardFont" style="margin-left:10px;vertical-align:middle;">Projects</span>
+    <div style="float:right; vertical-align:middle; margin-right:10px;">
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnList">List</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnProjectDetails">Project</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont" id="btnSaveEditStep">Save</button>
+        <button style="border-radius:3px; cursor:pointer;" class="standardFont">Delete</button>
+    </div>
+        
+</div>
+
+<div id="dialog_progress" style="display:none;">
+	<img src="~/Contents/images/ajax-loaderLarge.gif" style="    width: 70px; height: 70px; margin-left: 30px; margin-top: 18px; margin-bottom: 6px;"/>
+	<p style="text-align: center; font-size: 11;">Loading..</p>
+</div>
+
+
+<div class="standardFont" style="width:99%; border: 1px #808080 solid; border-radius:5px; padding:5px; margin:5px auto;">
+    <h4 style="margin-left:20px;">@ViewBag.ProjectName</h4>
+    <input type="hidden" id="projectGUID" value="@ViewBag.ProjectGUID"/>
+    <label style="float:right; margin-right:1px; margin-left:0px;" class="addNewStep" id="AddStep">Add New Step</label>
+    <div style="margin-left:0px;height:30px;">
+        
+        <ul style="list-style:none; padding-left:0px;">
+        @{
+            var stepsId = ViewBag.StepIds as List<int>;
+            var count = stepsId.Count;
+            for (int i = 0; i < count; i++)
+            {
+                
+                <li style="float:left; margin-right:1px; margin-left:0px;" class="stepList" id="Step_@stepsId[i]">Step @(i + 1)</li>
+            }
+         }
+            
+        </ul>
+    </div>
+
+    @if (Model != null)
+    { 
+        <div style="width:99%; border: 1px #808080 solid; border-radius:5px; padding:5px; margin:5px auto;" id="divStepDetail">
+             @{ Html.RenderPartial("_StepDetail", Model); }
+        </div>
+    }
+    else{
+        <div id="divNewStep">
+            No Steps
+        </div>
+    }
+
+    
+</div>
+<style>
+    .stepList {
+        cursor:pointer;
+        width:60px;
+        text-align:center;
+        line-height:30px;
+        height:30px;
+        background-color:#eee;
+        border-radius:2px;
+    }
+
+    .addNewStep{
+        cursor:pointer;
+        text-align:center;
+        line-height:30px;
+        height:30px;
+        background-color:#eee;
+        border-radius:2px;
+        padding:0px 5px;
+    }
+        .stepList :hover {
+            background-color:#ddd;
+        }
+</style>
+
+<script src="~/Scripts/ProjectPool/Project.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        EndAjaxLoading();
+    });
+</script>
+

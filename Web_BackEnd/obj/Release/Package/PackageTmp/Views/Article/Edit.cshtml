@@ -1,0 +1,131 @@
+﻿@model ProjectPool.DataEntity.Article
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="box round first grid">
+    <h2>New Article</h2>
+    <div class="block">
+        @using (Html.BeginForm("Edit", "Article", FormMethod.Post, new { @id = "ArticleForm", @enctype = "multipart/form-data" }))
+        {
+            <input type="hidden" name="ArticleId" value="@Model.ArticleId"/>
+            <input type="hidden" name="GUID" value="@Model.GUID"/>
+            <input type="hidden" name="ImageName" value="@Model.ImageName"/>
+            <input type="hidden" name="DateCreated" value="@Model.DateCreated"/>
+            <table class="form">
+                <tbody>
+                    <tr>
+                        <td class="col2">
+                            <label>Article Name</label>
+                            @Html.TextBoxFor(x => x.Title, new { @style="width:99%;", @class = "mandatory"})
+                        </td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        <td>
+                            <label>Tags</label><br />
+                            @{
+                                int[] tagIds = ViewBag.LinkedTags as int[];
+                             }
+                            <input type="hidden" name="ArticleTags" id="ArticleTags" class="mandatory"/>
+                            @foreach (KeyValuePair<int, string> item in ViewBag.TagKeyValueList as Dictionary<int, string>)
+                            {
+                                if (tagIds.Contains(item.Key))
+                                {
+                                    <input type="checkbox" value="@item.Key" id="@item.Key" name="ArticleTags" class="checkBox tagCheckBox" checked="checked" tabindex="10"/>
+                                    @item.Value
+                                }
+                                else
+                                {
+                                    <input type="checkbox" value="@item.Key" id="@item.Key" name="ArticleTags" class="checkBox tagCheckBox" tabindex="10"/>
+                                    @item.Value
+                                }
+                                <br />
+                            }
+                            
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label>Short Description</label>
+                            @Html.TextAreaFor(x => x.ShortDescription, new { @style="width:100%; height: 100px;"})
+
+                        </td>
+                    </tr>
+            
+                    <tr>
+                        <td>
+                            <label style="margin-right:10px;">Article Image</label><br />
+                            <input type="file" name="uploadArticleImage" id="FileUpload"  class = "mandatory" class="textBox" value="" tabindex="2" onchange="readURL(this);" style="display:none" />
+                            <img src="~/Data/Article/@Model.Title.Replace(" ","_")/@Model.ImageName" alt="" class ="uploadfile" style="cursor: pointer; height:150px;width:auto;"/>
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label>Description</label>
+                            @Html.TextAreaFor(x =>x.Discription)
+
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <label>References</label>
+                            @Html.TextAreaFor(x => x.References, new { @style="width:100%; height: 100px;"})
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            
+        }
+
+        <input name="addReference" value="N" id="addReference"/>
+        <button class="btn-icon btn-grey btn-plus"  id="btnAddReference"><span></span>Add Reference</button>
+        <button class="btn-icon btn-grey btn-arrow-right"  id="btnSaveArticle" style="margin-left:10px;"><span></span>Next</button>
+   </div>
+</div>
+
+<script src="~/Scripts/ProjectPool/Article.js"></script>
+
+<script type="text/javascript">
+    //CKEDITOR.replace('ShortDescription');
+    // CKEDITOR.replace('Discription');
+    //CKEDITOR.replace('References');
+
+    CKEDITOR.replace('Discription', {
+        "filebrowserImageUploadUrl": "/Article/UploadTempImage",
+        extraPlugins: 'mathjax',
+        mathJaxLib: 'http://cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
+        height: 620
+    });
+
+    CKEDITOR.editorConfig = function (config) {
+        config.extraPlugins = 'mathjax';
+        config.toolbar_Full[8] = ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar', 'PageBreak', 'Mathjax'];
+    }
+
+    $(".uploadfile").click(function () {
+        $("#FileUpload").trigger('click');
+    });
+
+    function readURL(input) {
+        if (input.files) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('.uploadfile')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
+
